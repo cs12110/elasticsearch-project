@@ -1,0 +1,11 @@
+server:
+  port: 8090
+  servlet:
+    context-path: /elastic-search/api/v1
+
+elasticsearch:
+  host: 118.89.113.147
+  port: 9200
+  book-indices: books
+  cluster-name: docker-cluster
+

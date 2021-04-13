@@ -1,0 +1,527 @@
+{
+  "info": {
+    "_postman_id": "6a27b6e2-3ec7-41a3-a909-e5d6ac2c9e15",
+    "name": "elasticsearch",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "rest",
+      "item": [
+        {
+          "name": "索引-创建indices",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"settings\": {\n        \"number_of_shards\": 1,\n        \"number_of_replicas\": 1\n    },\n    \"mappings\": {\n        \"properties\": {\n            \"isbn\": {\n                \"type\": \"text\"\n            },\n            \"author\": {\n                \"type\": \"keyword\"\n            },\n            \"bookName\": {\n                \"type\": \"text\"\n            },\n            \"description\": {\n                \"type\": \"text\",\n                \"analyzer\": \"ik_smart\"\n            },\n            \"score\": {\n                \"type\": \"double\"\n            },\n            \"publishTime\": {\n                \"type\": \"date\",\n                \"format\": \"yyyy-MM-dd HH:mm:ss\"\n            }\n        }\n    }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://118.89.113.147:9200/books",
+              "protocol": "http",
+              "host": [
+                "118",
+                "89",
+                "113",
+                "147"
+              ],
+              "port": "9200",
+              "path": [
+                "books"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "索引-删除indices",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://118.89.113.147:9200/books",
+              "protocol": "http",
+              "host": [
+                "118",
+                "89",
+                "113",
+                "147"
+              ],
+              "port": "9200",
+              "path": [
+                "books"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "索引-查询数据结构",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://118.89.113.147:9200/books/_mapping?pretty",
+              "protocol": "http",
+              "host": [
+                "118",
+                "89",
+                "113",
+                "147"
+              ],
+              "port": "9200",
+              "path": [
+                "books",
+                "_mapping"
+              ],
+              "query": [
+                {
+                  "key": "pretty",
+                  "value": null
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Ik分词-smartword",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"analyzer\": \"ik_smart\",\n    \"text\": \"阿q:我的世界,正在发送到你的邮箱,吴妈的也是\"\n}"
+            },
+            "url": {
+              "raw": "http://118.89.113.147:9200/_analyze?pretty=true",
+              "protocol": "http",
+              "host": [
+                "118",
+                "89",
+                "113",
+                "147"
+              ],
+              "port": "9200",
+              "path": [
+                "_analyze"
+              ],
+              "query": [
+                {
+                  "key": "pretty",
+                  "value": "true"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Ik分词-maxword",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"analyzer\": \"ik_max_word\",\n    \"text\": \"测试Ik分词,我们又要跪了,哈哈哈\"\n}"
+            },
+            "url": {
+              "raw": "http://118.89.113.147:9200/_analyze?pretty=true",
+              "protocol": "http",
+              "host": [
+                "118",
+                "89",
+                "113",
+                "147"
+              ],
+              "port": "9200",
+              "path": [
+                "_analyze"
+              ],
+              "query": [
+                {
+                  "key": "pretty",
+                  "value": "true"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "文档-新增数据",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"publishTime\": 1617877997000,\n    \"author\": \"鲁迅\",\n    \"bookName\": \"彷徨\",\n    \"isbn\": \"100\",\n    \"score\": 9.9,\n    \"tag\": [\n        \"散文\",\n        \"鲁迅\"\n    ],\n    \"description\": \"阿q,孔乙己,九斤老太\"\n}"
+            },
+            "url": {
+              "raw": "http://118.89.113.147:9200/books/_doc/1",
+              "protocol": "http",
+              "host": [
+                "118",
+                "89",
+                "113",
+                "147"
+              ],
+              "port": "9200",
+              "path": [
+                "books",
+                "_doc",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "文档-删除数据",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "http://118.89.113.147:9200/books/_doc/2021041210370209600001",
+              "protocol": "http",
+              "host": [
+                "118",
+                "89",
+                "113",
+                "147"
+              ],
+              "port": "9200",
+              "path": [
+                "books",
+                "_doc",
+                "2021041210370209600001"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "文档-更新数据",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"publishTime\": 1617877997000,\n    \"author\": \"鲁迅\",\n    \"bookName\": \"彷徨\",\n    \"isbn\": \"100\",\n    \"score\": 9.9,\n    \"tag\": [\n        \"散文\",\n        \"鲁迅\"\n    ],\n    \"description\": \"阿q,孔乙己,九斤老太,吴姨,我要和你困觉\"\n}"
+            },
+            "url": {
+              "raw": "http://118.89.113.147:9200/books/_doc/1",
+              "protocol": "http",
+              "host": [
+                "118",
+                "89",
+                "113",
+                "147"
+              ],
+              "port": "9200",
+              "path": [
+                "books",
+                "_doc",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "project",
+      "item": [
+        {
+          "name": "书籍-新增数据",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"bookName\": \"呐喊\",\n    \"author\": \"鲁迅\",\n    \"score\": 9.8,\n    \"description\": \"呐喊\",\n    \"tags\": [\n        \"中国\",\n        \"鲁迅\",\n        \"呐喊\",\n        \"白话文\"\n    ],\n    \"publishTime\": \"1916-12-13 12:00:00\",\n    \"isbn\": \"isbn1234\"\n}"
+            },
+            "url": {
+              "raw": "http://127.0.0.1:8090/elastic-search/api/v1/books",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "1"
+              ],
+              "port": "8090",
+              "path": [
+                "elastic-search",
+                "api",
+                "v1",
+                "books"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "书籍-获取详情",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"bookName\": \"杀死一只知更鸟\",\n    \"author\": \"cooper\",\n    \"score\": 9.0,\n    \"description\": \"卧槽,杀死一只知更鸟,里面的东西还挺有趣\",\n    \"tags\": [\n        \"欧美\",\n        \"教育\",\n        \"文学\"\n    ],\n    \"publishTime\": \"1968-12-12 12:00:00\",\n    \"isbn\": \"isbn1234\"\n}"
+            },
+            "url": {
+              "raw": "http://127.0.0.1:8090/elastic-search/api/v1/books/2021041213252708100002",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "1"
+              ],
+              "port": "8090",
+              "path": [
+                "elastic-search",
+                "api",
+                "v1",
+                "books",
+                "2021041213252708100002"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "书籍-删除数据",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"bookName\": \"杀死一只知更鸟\",\n    \"author\": \"cooper\",\n    \"score\": 9.0,\n    \"description\": \"卧槽,杀死一只知更鸟,里面的东西还挺有趣\",\n    \"tags\": [\n        \"欧美\",\n        \"教育\",\n        \"文学\"\n    ],\n    \"publishTime\": \"1968-12-12 12:00:00\",\n    \"isbn\": \"isbn1234\"\n}"
+            },
+            "url": {
+              "raw": "http://127.0.0.1:8090/elastic-search/api/v1/books/2021041210573400000002",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "1"
+              ],
+              "port": "8090",
+              "path": [
+                "elastic-search",
+                "api",
+                "v1",
+                "books",
+                "2021041210573400000002"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "书籍-更新数据",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"id\":\"2021041210580438100004\",\n    \"bookName\": \"更新: 杀死一只知更鸟\",\n    \"author\": \"cooper\",\n    \"score\": 9.0,\n    \"description\": \"卧槽,杀死一只知更鸟,里面的东西还挺有趣\",\n    \"tags\": [\n        \"欧美1\",\n        \"教育1\",\n        \"文学1\"\n    ],\n    \"publishTime\": \"1968-12-12 12:00:00\",\n    \"isbn\": \"isbn1234\"\n}"
+            },
+            "url": {
+              "raw": "http://127.0.0.1:8090/elastic-search/api/v1/books",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "1"
+              ],
+              "port": "8090",
+              "path": [
+                "elastic-search",
+                "api",
+                "v1",
+                "books"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "书籍-查询数据",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"id\":\"2021041210580438100004\",\n    \"bookName\": \"更新: 杀死一只知更鸟\",\n    \"author\": \"cooper\",\n    \"score\": 9.0,\n    \"description\": \"卧槽,杀死一只知更鸟,里面的东西还挺有趣\",\n    \"tags\": [\n        \"欧美1\",\n        \"教育1\",\n        \"文学1\"\n    ],\n    \"publishTime\": \"1968-12-12 12:00:00\",\n    \"isbn\": \"isbn1234\"\n}"
+            },
+            "url": {
+              "raw": "http://127.0.0.1:8090/elastic-search/api/v1/books?author=鲁迅&pageSize=10",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "1"
+              ],
+              "port": "8090",
+              "path": [
+                "elastic-search",
+                "api",
+                "v1",
+                "books"
+              ],
+              "query": [
+                {
+                  "key": "author",
+                  "value": "鲁迅"
+                },
+                {
+                  "key": "tags",
+                  "value": "教育",
+                  "disabled": true
+                },
+                {
+                  "key": "pageSize",
+                  "value": "10"
+                },
+                {
+                  "key": "description",
+                  "value": "孔乙己",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "索引-获取索引详情",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"bookName\": \"呐喊\",\n    \"author\": \"鲁迅\",\n    \"score\": 9.8,\n    \"description\": \"呐喊\",\n    \"tags\": [\n        \"中国\",\n        \"鲁迅\",\n        \"呐喊\",\n        \"白话文\"\n    ],\n    \"publishTime\": \"1916-12-13 12:00:00\",\n    \"isbn\": \"isbn1234\"\n}"
+            },
+            "url": {
+              "raw": "http://127.0.0.1:8090/elastic-search/api/v1/indexes/books",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "1"
+              ],
+              "port": "8090",
+              "path": [
+                "elastic-search",
+                "api",
+                "v1",
+                "indexes",
+                "books"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
