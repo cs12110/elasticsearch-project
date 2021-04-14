@@ -3,6 +3,7 @@ package com.search.pkgs.common.response;
 import com.alibaba.fastjson.JSON;
 import com.search.pkgs.common.enums.ResponseCodeEnum;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /**
@@ -13,10 +14,13 @@ import lombok.Data;
 @Data
 public class SysResp<T> {
 
+    @ApiModelProperty(value = "请求编码,1:成功,-1:失败", required = true)
     private Integer code;
 
+    @ApiModelProperty(value = "提示信息", required = true)
     private String message;
 
+    @ApiModelProperty(value = "数据")
     private T value;
 
     public static <T> SysResp<T> success(T value) {

@@ -42,10 +42,9 @@ public class IndexService {
             log.info("Function[getIndex] request:{}, response:{}", indexName, getIndexResponse);
 
             Map<String, MappingMetadata> mappings = getIndexResponse.getMappings();
-            Map<String, Settings> settings = getIndexResponse.getSettings();
             indexInfoEntity.setIndexName(indexName);
             indexInfoEntity.setMapping(mappings);
-            indexInfoEntity.setSetting(settings);
+            //indexInfoEntity.setSetting(settings);
 
             return indexInfoEntity;
         } catch (Exception e) {

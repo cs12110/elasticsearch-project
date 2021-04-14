@@ -20,6 +20,8 @@
         <lombok.version>1.16.22</lombok.version>
         <fastjson.version>1.2.46</fastjson.version>
         <elasticsearch.version>7.12.0</elasticsearch.version>
+        <swagger.version>2.9.2</swagger.version>
+        <swagger-ui.version>1.9.6</swagger-ui.version>
     </properties>
 
     <dependencies>
@@ -50,6 +52,17 @@
             <version>${elasticsearch.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+            <version>${swagger.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.xiaoymin</groupId>
+            <artifactId>swagger-bootstrap-ui</artifactId>
+            <version>${swagger-ui.version}</version>
+        </dependency>
 
     </dependencies>
 

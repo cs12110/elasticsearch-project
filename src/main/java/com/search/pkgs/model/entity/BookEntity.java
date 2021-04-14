@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import java.util.Date;
 import java.util.List;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /**
@@ -20,31 +21,37 @@ public class BookEntity {
     /**
      * id
      */
+    @ApiModelProperty("id")
     private String id;
 
     /**
      * isbn
      */
+    @ApiModelProperty("isbn")
     private String isbn;
 
     /**
      * 作者
      */
+    @ApiModelProperty("作者")
     private String author;
 
     /**
      * 书籍名称
      */
+    @ApiModelProperty("书籍名称")
     private String bookName;
 
     /**
      * 描述,ik分词
      */
+    @ApiModelProperty("描述")
     private String description;
 
     /**
      * 评分
      */
+    @ApiModelProperty("评分")
     private Double score;
 
     /**
@@ -52,11 +59,13 @@ public class BookEntity {
      */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JSONField(format = "yyyy-MM-dd HH:mm:ss")
+    @ApiModelProperty("发行时间")
     private Date publishTime;
 
     /**
      * 标签
      */
+    @ApiModelProperty("标签")
     private List<String> tags;
 
     @Override
