@@ -7,7 +7,6 @@ import com.search.pkgs.model.entity.BookEntity;
 import com.search.pkgs.model.request.BookQueryReq;
 import com.search.pkgs.model.response.PageResp;
 import com.search.pkgs.util.ListUtil;
-import com.search.pkgs.util.RandomUtil;
 import com.search.pkgs.util.StrUtil;
 
 import java.util.ArrayList;
@@ -16,6 +15,9 @@ import java.util.Objects;
 
 import javax.annotation.Resource;
 
+import org.elasticsearch.action.bulk.BulkItemResponse;
+import org.elasticsearch.action.bulk.BulkRequest;
+import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.get.GetRequest;
@@ -30,7 +32,7 @@ import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.common.xcontent.XContentType;
-import org.elasticsearch.index.query.MatchQueryBuilder;
+import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.TermQueryBuilder;
 import org.elasticsearch.index.query.WildcardQueryBuilder;
@@ -58,22 +60,43 @@ public class BookDocumentService {
 
     public BookEntity save(BookEntity info) {
         try {
-            String documentId = RandomUtil.timestamp();
-
             IndexRequest indexRequest = new IndexRequest(elasticSearchConfig.getBookIndices());
-            indexRequest.id(documentId);
+            indexRequest.id(info.getId());
             indexRequest.timeout(TimeValue.timeValueSeconds(3));
             indexRequest.source(JSON.toJSONString(info), XContentType.JSON);
 
             IndexResponse index = restHighLevelClient.index(indexRequest, RequestOptions.DEFAULT);
 
             log.info("Function[save]request:{},response:{}", indexRequest, index);
-            info.setId(documentId);
         } catch (Exception e) {
             throw new BizException(e);
         }
 
         return info;
+    }
+
+    public boolean batchSave(List<BookEntity> infos) {
+        if (ListUtil.isEmpty(infos)) {
+            return Boolean.FALSE;
+        }
+        try {
+            BulkRequest bulkRequest = new BulkRequest();
+
+            for (BookEntity info : infos) {
+                IndexRequest indexRequest = new IndexRequest(elasticSearchConfig.getBookIndices());
+                indexRequest.id(info.getId());
+                indexRequest.timeout(TimeValue.timeValueSeconds(3));
+                indexRequest.source(JSON.toJSONString(info), XContentType.JSON);
+
+                bulkRequest.add(indexRequest);
+            }
+            BulkResponse bulk = restHighLevelClient.bulk(bulkRequest, RequestOptions.DEFAULT);
+            log.info("Function[save]request:{},response:{}", bulkRequest, bulk);
+        } catch (Exception e) {
+            throw new BizException(e);
+        }
+
+        return Boolean.TRUE;
     }
 
     public boolean update(BookEntity info) {
@@ -111,33 +134,38 @@ public class BookDocumentService {
             SearchRequest searchRequest = new SearchRequest(elasticSearchConfig.getBookIndices());
             //构建搜索条件
             SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
-            searchSourceBuilder.sort("publishTime", SortOrder.DESC);
+            BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
+            if (!StrUtil.isEmpty(pageRequest.getSortField())) {
+                SortOrder sortOrder = Objects.equals(1, pageRequest.getSortWay()) ? SortOrder.ASC : SortOrder.DESC;
+                searchSourceBuilder.sort(pageRequest.getSortField(), sortOrder);
+            }
 
             if (!StrUtil.isEmpty(pageRequest.getIsbn())) {
                 //相当于term查询，通过QueryBuilders完成查询条件的构造
                 TermQueryBuilder termQueryBuilder = QueryBuilders.termQuery("isbn", pageRequest.getIsbn());
-                // 例如匹配所有的可以这么写 ： QueryBuilders.matchAllQuery();//匹配所有
-                searchSourceBuilder.query(termQueryBuilder);
+                boolQueryBuilder.must(termQueryBuilder);
             }
 
             if (!StrUtil.isEmpty(pageRequest.getAuthor())) {
                 TermQueryBuilder termQueryBuilder = QueryBuilders.termQuery("author", pageRequest.getAuthor());
-                searchSourceBuilder.query(termQueryBuilder);
+                boolQueryBuilder.must(termQueryBuilder);
             }
 
             if (!StrUtil.isEmpty(pageRequest.getDescription())) {
                 WildcardQueryBuilder wildcardQuery = QueryBuilders
                     .wildcardQuery("description", pageRequest.getDescription());
-                searchSourceBuilder.query(wildcardQuery);
+                boolQueryBuilder.must(wildcardQuery);
             }
 
             if (!ListUtil.isEmpty(pageRequest.getTags())) {
+                BoolQueryBuilder tagBoolQueryBuilder = QueryBuilders.boolQuery();
                 for (String tag : pageRequest.getTags()) {
-                    MatchQueryBuilder matchQueryBuilder = QueryBuilders.matchQuery("tags", tag);
-                    searchSourceBuilder.query(matchQueryBuilder);
+                    tagBoolQueryBuilder.should(QueryBuilders.termQuery("tags", tag));
                 }
+                boolQueryBuilder.must(tagBoolQueryBuilder);
             }
 
+            searchSourceBuilder.query(boolQueryBuilder);
             int fromIndex = (pageRequest.getPageNumber() - 1) * pageRequest.getPageSize();
             searchSourceBuilder.from(fromIndex);
             searchSourceBuilder.size(pageRequest.getPageSize());

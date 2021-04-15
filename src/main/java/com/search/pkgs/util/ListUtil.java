@@ -13,4 +13,8 @@ public class ListUtil {
     public static boolean isEmpty(List<?> list) {
         return Objects.isNull(list) || list.isEmpty();
     }
+
+    public static <T> T getFirstElement(List<T> list) {
+        return isEmpty(list) ? null : list.get(0);
+    }
 }

@@ -1,7 +1,5 @@
 package com.search.pkgs.service;
 
-import com.alibaba.fastjson.JSON;
-import com.search.pkgs.common.conig.ElasticSearchConfig;
 import com.search.pkgs.common.exceptions.BizException;
 import com.search.pkgs.model.entity.IndexInfoEntity;
 
@@ -14,21 +12,18 @@ import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.client.indices.GetIndexRequest;
 import org.elasticsearch.client.indices.GetIndexResponse;
 import org.elasticsearch.cluster.metadata.MappingMetadata;
-import org.elasticsearch.common.settings.Settings;
 import org.springframework.stereotype.Service;
 
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * @author huapeng.huang
+ * @author cs12110
  * @version V1.0
  * @since 2021-04-12 15:26
  */
 @Slf4j
 @Service
 public class IndexService {
-    @Resource
-    private ElasticSearchConfig elasticSearchConfig;
     @Resource
     private RestHighLevelClient restHighLevelClient;
 
@@ -44,7 +39,6 @@ public class IndexService {
             Map<String, MappingMetadata> mappings = getIndexResponse.getMappings();
             indexInfoEntity.setIndexName(indexName);
             indexInfoEntity.setMapping(mappings);
-            //indexInfoEntity.setSetting(settings);
 
             return indexInfoEntity;
         } catch (Exception e) {

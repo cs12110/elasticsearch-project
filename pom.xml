@@ -22,6 +22,8 @@
         <elasticsearch.version>7.12.0</elasticsearch.version>
         <swagger.version>2.9.2</swagger.version>
         <swagger-ui.version>1.9.6</swagger-ui.version>
+        <httpclient.version>4.5.13</httpclient.version>
+        <jsoup.version>1.13.1</jsoup.version>
     </properties>
 
     <dependencies>
@@ -63,6 +65,19 @@
             <artifactId>swagger-bootstrap-ui</artifactId>
             <version>${swagger-ui.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>${httpclient.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+            <version>${jsoup.version}</version>
+        </dependency>
+
 
     </dependencies>
 

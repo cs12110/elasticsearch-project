@@ -6,7 +6,7 @@
   },
   "item": [
     {
-      "name": "rest",
+      "name": "原生接口",
       "item": [
         {
           "name": "索引-创建indices",
@@ -21,7 +21,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"settings\": {\n        \"number_of_shards\": 1,\n        \"number_of_replicas\": 1\n    },\n    \"mappings\": {\n        \"properties\": {\n            \"isbn\": {\n                \"type\": \"text\"\n            },\n            \"author\": {\n                \"type\": \"keyword\"\n            },\n            \"bookName\": {\n                \"type\": \"text\"\n            },\n            \"description\": {\n                \"type\": \"text\",\n                \"analyzer\": \"ik_smart\"\n            },\n            \"score\": {\n                \"type\": \"double\"\n            },\n            \"publishTime\": {\n                \"type\": \"date\",\n                \"format\": \"yyyy-MM-dd HH:mm:ss\"\n            }\n        }\n    }\n}",
+              "raw": "{\n    \"settings\": {\n        \"number_of_shards\": 1,\n        \"number_of_replicas\": 1\n    },\n    \"mappings\": {\n        \"properties\": {\n            \"isbn\": {\n                \"type\": \"text\"\n            },\n            \"author\": {\n                \"type\": \"keyword\"\n            },\n            \"bookName\": {\n                \"type\": \"text\"\n            },\n            \"description\": {\n                \"type\": \"text\",\n                \"analyzer\": \"ik_smart\"\n            },\n            \"score\": {\n                \"type\": \"double\"\n            },\n            \"publishTime\": {\n                \"type\": \"date\",\n                \"format\": \"yyyy-MM-dd HH:mm:ss\"\n            },\n            \"tags\":{\n                \"type\": \"keyword\"\n            }\n        }\n    }\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -109,7 +109,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"analyzer\": \"ik_smart\",\n    \"text\": \"阿q:我的世界,正在发送到你的邮箱,吴妈的也是\"\n}"
+              "raw": "{\n    \"analyzer\": \"ik_smart\",\n    \"text\": \"罗杰疑案 : 阿加莎·克里斯蒂侦探作品集02 The Murder of Roger Ackroyd\"\n}"
             },
             "url": {
               "raw": "http://118.89.113.147:9200/_analyze?pretty=true",
@@ -147,7 +147,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"analyzer\": \"ik_max_word\",\n    \"text\": \"测试Ik分词,我们又要跪了,哈哈哈\"\n}"
+              "raw": "{\n    \"analyzer\": \"ik_max_word\",\n  \"text\": \"中华人民共和国\"\n}"
             },
             "url": {
               "raw": "http://118.89.113.147:9200/_analyze?pretty=true",
@@ -173,6 +173,27 @@
           "response": []
         },
         {
+          "name": "IK分词-远程扩展词",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://oss-universe.oss-cn-guangzhou.aliyuncs.com/ik-ext.dic",
+              "protocol": "https",
+              "host": [
+                "oss-universe",
+                "oss-cn-guangzhou",
+                "aliyuncs",
+                "com"
+              ],
+              "path": [
+                "ik-ext.dic"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
           "name": "文档-新增数据",
           "request": {
             "method": "POST",
@@ -185,7 +206,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"publishTime\": 1617877997000,\n    \"author\": \"鲁迅\",\n    \"bookName\": \"彷徨\",\n    \"isbn\": \"100\",\n    \"score\": 9.9,\n    \"tag\": [\n        \"散文\",\n        \"鲁迅\"\n    ],\n    \"description\": \"阿q,孔乙己,九斤老太\"\n}"
+              "raw": "{\n    \"publishTime\": \"\",\n    \"author\": \"鲁迅\",\n    \"bookName\": \"彷徨\",\n    \"isbn\": \"100\",\n    \"score\": 9.9,\n    \"tag\": [\n        \"散文\",\n        \"鲁迅\"\n    ],\n    \"description\": \"阿q,孔乙己,九斤老太\"\n}"
             },
             "url": {
               "raw": "http://118.89.113.147:9200/books/_doc/1",
@@ -277,7 +298,7 @@
       ]
     },
     {
-      "name": "project",
+      "name": "书籍接口",
       "item": [
         {
           "name": "书籍-新增数据",
@@ -443,7 +464,7 @@
               "raw": "{\n    \"id\":\"2021041210580438100004\",\n    \"bookName\": \"更新: 杀死一只知更鸟\",\n    \"author\": \"cooper\",\n    \"score\": 9.0,\n    \"description\": \"卧槽,杀死一只知更鸟,里面的东西还挺有趣\",\n    \"tags\": [\n        \"欧美1\",\n        \"教育1\",\n        \"文学1\"\n    ],\n    \"publishTime\": \"1968-12-12 12:00:00\",\n    \"isbn\": \"isbn1234\"\n}"
             },
             "url": {
-              "raw": "http://127.0.0.1:8090/elastic-search/api/v1/books?author=鲁迅&pageSize=10",
+              "raw": "http://127.0.0.1:8090/elastic-search/api/v1/books?tags=尼罗河上的惨案,人间草木,汪曾祺",
               "protocol": "http",
               "host": [
                 "127",
@@ -461,27 +482,124 @@
               "query": [
                 {
                   "key": "author",
-                  "value": "鲁迅"
-                },
-                {
-                  "key": "tags",
-                  "value": "教育",
+                  "value": "三毛",
                   "disabled": true
                 },
                 {
+                  "key": "tags",
+                  "value": "尼罗河上的惨案,人间草木,汪曾祺"
+                },
+                {
                   "key": "pageSize",
-                  "value": "10"
+                  "value": "10",
+                  "disabled": true
                 },
                 {
                   "key": "description",
-                  "value": "孔乙己",
+                  "value": "遥远",
+                  "disabled": true
+                },
+                {
+                  "key": "sortField",
+                  "value": "score",
+                  "disabled": true
+                },
+                {
+                  "key": "sortWay",
+                  "value": "-1",
                   "disabled": true
                 }
               ]
             }
           },
           "response": []
-        },
+        }
+      ]
+    },
+    {
+      "name": "爬虫接口",
+      "item": [
+        {
+          "name": "爬虫-爬取数据",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"bookName\": \"呐喊\",\n    \"author\": \"鲁迅\",\n    \"score\": 9.8,\n    \"description\": \"呐喊\",\n    \"tags\": [\n        \"中国\",\n        \"鲁迅\",\n        \"呐喊\",\n        \"白话文\"\n    ],\n    \"publishTime\": \"1916-12-13 12:00:00\",\n    \"isbn\": \"isbn1234\"\n}"
+            },
+            "url": {
+              "raw": "http://127.0.0.1:8090/elastic-search/api/v1/spider/exec",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "1"
+              ],
+              "port": "8090",
+              "path": [
+                "elastic-search",
+                "api",
+                "v1",
+                "spider",
+                "exec"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "分词接口",
+      "item": [
+        {
+          "name": "分词-获取分词",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"text\":\"测试分词,这是何等的卧槽啊\"\n}"
+            },
+            "url": {
+              "raw": "http://127.0.0.1:8090/elastic-search/api/v1/analyzer",
+              "protocol": "http",
+              "host": [
+                "127",
+                "0",
+                "0",
+                "1"
+              ],
+              "port": "8090",
+              "path": [
+                "elastic-search",
+                "api",
+                "v1",
+                "analyzer"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "索引接口",
+      "item": [
         {
           "name": "索引-获取索引详情",
           "protocolProfileBehavior": {
@@ -501,7 +619,7 @@
               "raw": "{\n    \"bookName\": \"呐喊\",\n    \"author\": \"鲁迅\",\n    \"score\": 9.8,\n    \"description\": \"呐喊\",\n    \"tags\": [\n        \"中国\",\n        \"鲁迅\",\n        \"呐喊\",\n        \"白话文\"\n    ],\n    \"publishTime\": \"1916-12-13 12:00:00\",\n    \"isbn\": \"isbn1234\"\n}"
             },
             "url": {
-              "raw": "http://127.0.0.1:8090/elastic-search/api/v1/indexes/books",
+              "raw": "http://127.0.0.1:8090/elastic-search/api/v1/indexes/mapping/books",
               "protocol": "http",
               "host": [
                 "127",
@@ -515,6 +633,7 @@
                 "api",
                 "v1",
                 "indexes",
+                "mapping",
                 "books"
               ]
             }

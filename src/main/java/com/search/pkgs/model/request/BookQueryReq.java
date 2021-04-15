@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 
 import java.util.List;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -16,10 +17,23 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 public class BookQueryReq extends PageReq {
 
+    @ApiModelProperty("isbn")
     private String isbn;
+
+    @ApiModelProperty("描述")
     private String description;
+
+    @ApiModelProperty("作者")
     private String author;
+
+    @ApiModelProperty("tags")
     private List<String> tags;
+
+    @ApiModelProperty("排序字段")
+    private String sortField;
+
+    @ApiModelProperty("排序类型,1:升序,-1:降序")
+    private Integer sortWay;
 
     @Override
     public String toString() {
