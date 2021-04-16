@@ -10,6 +10,10 @@ import java.util.Objects;
  */
 public class ListUtil {
 
+    public static boolean isNotEmpty(List<?> list) {
+        return Objects.nonNull(list) && !list.isEmpty();
+    }
+
     public static boolean isEmpty(List<?> list) {
         return Objects.isNull(list) || list.isEmpty();
     }
