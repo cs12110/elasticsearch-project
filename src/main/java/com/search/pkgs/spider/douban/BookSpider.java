@@ -1,5 +1,6 @@
 package com.search.pkgs.spider.douban;
 
+import com.search.pkgs.common.constant.SysConstant;
 import com.search.pkgs.model.entity.BookEntity;
 import com.search.pkgs.service.BookDocumentService;
 import com.search.pkgs.spider.douban.parser.BookParser;
@@ -33,8 +34,6 @@ public class BookSpider {
     @Resource
     private BookDocumentService bookDocumentService;
 
-    private static final String USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.182 Safari/537.36";
-
     public void execute() {
         for (int index = 0; index < 11; index++) {
             execute(index);
@@ -42,7 +41,6 @@ public class BookSpider {
     }
 
     private void execute(int pageIndex) {
-
         long spiderStart = System.currentTimeMillis();
         List<BookEntity> books = getBooksFromWebsite(pageIndex);
         long spiderEnd = System.currentTimeMillis();
@@ -62,7 +60,7 @@ public class BookSpider {
         String url = "https://book.douban.com/top250?start=" + startNum;
 
         HttpHeaders headers = new HttpHeaders();
-        headers.set(HttpHeaders.USER_AGENT, USER_AGENT);
+        headers.set(HttpHeaders.USER_AGENT, SysConstant.USER_AGENT);
         HttpEntity<?> entity = new HttpEntity<>(null, headers);
 
         ResponseEntity<String> rpcResult = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);

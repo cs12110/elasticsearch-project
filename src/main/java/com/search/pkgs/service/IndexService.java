@@ -42,7 +42,7 @@ public class IndexService {
 
             return indexInfoEntity;
         } catch (Exception e) {
-            throw new BizException(e);
+            throw new BizException("获取索引Mapping失败," + e.getMessage());
         }
     }
 }

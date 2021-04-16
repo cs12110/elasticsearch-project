@@ -1,5 +1,7 @@
 package com.search.pkgs.service;
 
+import com.google.common.base.Preconditions;
+import com.search.pkgs.common.constant.SysConstant;
 import com.search.pkgs.common.exceptions.BizException;
 import com.search.pkgs.model.request.AnalyzerReq;
 import com.search.pkgs.model.response.AnalyzerResp;
@@ -8,6 +10,7 @@ import com.search.pkgs.util.StrUtil;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import javax.annotation.Resource;
 
@@ -30,8 +33,6 @@ public class AnalyzerService {
     @Resource
     private RestHighLevelClient restHighLevelClient;
 
-    private static final String DEFAULT_ANALYZER = "ik_smart";
-
     /**
      * 分词
      *
@@ -39,11 +40,9 @@ public class AnalyzerService {
      * @return List
      */
     public List<AnalyzerResp> analyzer(AnalyzerReq req) {
-        if (StrUtil.isEmpty(req.getText())) {
-            return Collections.emptyList();
-        }
+        checkArgs(req);
         try {
-            String analyzer = StrUtil.isEmpty(req.getAnalyzer()) ? DEFAULT_ANALYZER : req.getAnalyzer();
+            String analyzer = StrUtil.isEmpty(req.getAnalyzer()) ? SysConstant.DEFAULT_ANALYZER : req.getAnalyzer();
 
             AnalyzeRequest analyzeRequest = AnalyzeRequest.withGlobalAnalyzer(analyzer, req.getText());
             AnalyzeResponse analyzeResponse = restHighLevelClient.indices()
@@ -59,7 +58,14 @@ public class AnalyzerService {
             }
             return words;
         } catch (Exception e) {
-            throw new BizException(e);
+            throw new BizException("分词异常," + e.getMessage());
         }
+    }
+
+    private void checkArgs(AnalyzerReq req) {
+        Preconditions.checkArgument(StrUtil.isNotEmpty(req.getText()), "分词内容不能为空");
+        //        if(StrUtil.isEmpty(req.getText())){
+        //            throw  new BizException("分词内容不能为空");
+        //        }
     }
 }

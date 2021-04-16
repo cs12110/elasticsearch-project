@@ -7,9 +7,15 @@ package com.search.pkgs.common.exceptions;
  */
 public class BizException extends RuntimeException {
 
-
+    public BizException(String message) {
+        super(message);
+    }
 
     public BizException(Throwable cause) {
         super(cause);
+    }
+
+    public BizException(Throwable cause, String message) {
+        super(message, cause);
     }
 }

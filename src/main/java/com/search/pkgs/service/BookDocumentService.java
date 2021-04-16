@@ -69,7 +69,7 @@ public class BookDocumentService {
 
             log.info("Function[save]request:{},response:{}", indexRequest, index);
         } catch (Exception e) {
-            throw new BizException(e);
+            throw new BizException("保存数据失败," + e.getMessage());
         }
 
         return info;
@@ -93,7 +93,7 @@ public class BookDocumentService {
             BulkResponse bulk = restHighLevelClient.bulk(bulkRequest, RequestOptions.DEFAULT);
             log.info("Function[save]request:{},response:{}", bulkRequest, bulk);
         } catch (Exception e) {
-            throw new BizException(e);
+            throw new BizException("批量保存数据失败," + e.getMessage());
         }
 
         return Boolean.TRUE;
@@ -108,7 +108,7 @@ public class BookDocumentService {
             RestStatus status = update.status();
             return Objects.equals(RestStatus.OK, status);
         } catch (Exception e) {
-            throw new BizException(e);
+            throw new BizException("更新数据失败," + e.getMessage());
         }
     }
 
@@ -125,7 +125,7 @@ public class BookDocumentService {
             }
             return info;
         } catch (Exception e) {
-            throw new BizException(e);
+            throw new BizException("删除数据详情," + e.getMessage());
         }
     }
 
@@ -190,7 +190,7 @@ public class BookDocumentService {
             return PageResp.create(pageRequest.getPageNumber(), pageRequest.getPageSize(), totalPageNumber,
                 (int) totalRecordNumber, matchRecords);
         } catch (Exception e) {
-            throw new BizException(e);
+            throw new BizException("搜索数据失败," + e.getMessage());
         }
     }
 
@@ -201,7 +201,7 @@ public class BookDocumentService {
             RestStatus status = deleteResponse.status();
             return Objects.equals(RestStatus.OK, status);
         } catch (Exception e) {
-            throw new BizException(e);
+            throw new BizException("删除数据失败," + e.getMessage());
         }
     }
 

@@ -7,6 +7,10 @@ package com.search.pkgs.util;
  */
 public class StrUtil {
 
+    public static boolean isNotEmpty(String str) {
+        return !isEmpty(str);
+    }
+
     public static boolean isEmpty(String str) {
         return null == str || "".equals(str.trim());
     }
