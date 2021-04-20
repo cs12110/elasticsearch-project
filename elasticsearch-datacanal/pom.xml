@@ -12,4 +12,12 @@
     <artifactId>elasticsearch-datacanal</artifactId>
     <version>1.0.0</version>
 
+
+    <dependencies>
+        <dependency>
+            <groupId>com.alibaba.otter</groupId>
+            <artifactId>canal.client</artifactId>
+        </dependency>
+    </dependencies>
+
 </project>
