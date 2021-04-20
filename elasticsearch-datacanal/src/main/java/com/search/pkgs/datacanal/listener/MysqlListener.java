@@ -5,18 +5,32 @@ import com.alibaba.otter.canal.client.CanalConnectors;
 import com.alibaba.otter.canal.protocol.CanalEntry;
 import com.alibaba.otter.canal.protocol.Message;
 import com.search.pkgs.datacanal.common.CanalConstant;
+import com.search.pkgs.events.SysEvent;
+import com.search.pkgs.events.SysEventPublisher;
+import com.search.pkgs.events.payload.DataChangePayload;
 
 import java.net.InetSocketAddress;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Service;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
- * @author huapeng.huang
+ * @author cs12110
  * @version V1.0
  * @since 2021-04-20 09:30
  */
+@Slf4j
+@Service
 public class MysqlListener {
 
-    public static void exec() {
+    @Async
+    public void exec() {
+        log.info("Function[MysqlListener.exec] startup");
         // 每次获取数量
         int batchSize = 1000;
         // 创建链接
@@ -78,25 +92,37 @@ public class MysqlListener {
                 entry.getHeader().getLogfileName(), entry.getHeader().getLogfileOffset(),
                 entry.getHeader().getSchemaName(), entry.getHeader().getTableName(), eventType));
 
+            List<CanalEntry.Column> columns;
             for (CanalEntry.RowData rowData : rowChange.getRowDatasList()) {
                 if (eventType == CanalEntry.EventType.DELETE) {
-                    printColumn(rowData.getBeforeColumnsList());
+                    columns = rowData.getBeforeColumnsList();
                 } else if (eventType == CanalEntry.EventType.INSERT) {
-                    printColumn(rowData.getAfterColumnsList());
+                    columns = rowData.getAfterColumnsList();
                 } else {
-                    System.out.println("-------&gt; before");
-                    printColumn(rowData.getBeforeColumnsList());
-                    System.out.println("-------&gt; after");
-                    printColumn(rowData.getAfterColumnsList());
+                    columns = rowData.getAfterColumnsList();
                 }
+
+                Map<String, Object> changeInfos = buildChangeInfos(columns);
+
+                DataChangePayload payload = new DataChangePayload();
+                payload.setDatabaseName(entry.getHeader().getSchemaName());
+                payload.setTableName(entry.getHeader().getTableName());
+                payload.setValueMap(changeInfos);
+
+                String businessType = String.valueOf(eventType);
+                SysEvent sysEvent = SysEvent
+                    .create(String.valueOf(System.currentTimeMillis()), businessType, payload.toString());
+                SysEventPublisher.publish(sysEvent);
             }
         }
     }
 
-    private static void printColumn(List<CanalEntry.Column> columns) {
+    private static Map<String, Object> buildChangeInfos(List<CanalEntry.Column> columns) {
+        Map<String, Object> map = new HashMap<>(columns.size());
         for (CanalEntry.Column column : columns) {
-            System.out.println(column.getName() + " : " + column.getValue() + "    update=" + column.getUpdated());
+            map.put(column.getName(), column.getValue());
         }
+        return map;
     }
 
 }

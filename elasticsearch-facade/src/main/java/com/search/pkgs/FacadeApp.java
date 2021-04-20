@@ -2,6 +2,7 @@ package com.search.pkgs;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableAsync;
 
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
@@ -27,6 +28,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
  * @version V1.0
  * @since 2021-04-12 09:16
  */
+@EnableAsync
 @EnableSwagger2
 @SpringBootApplication
 public class FacadeApp {

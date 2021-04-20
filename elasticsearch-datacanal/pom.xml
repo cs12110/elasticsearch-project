@@ -18,6 +18,12 @@
             <groupId>com.alibaba.otter</groupId>
             <artifactId>canal.client</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>org.example</groupId>
+            <artifactId>elasticsearch-common</artifactId>
+            <version>1.0.0</version>
+        </dependency>
     </dependencies>
 
 </project>

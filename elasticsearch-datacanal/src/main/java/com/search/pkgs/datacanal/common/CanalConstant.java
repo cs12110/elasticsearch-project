@@ -3,7 +3,7 @@ package com.search.pkgs.datacanal.common;
 import lombok.Data;
 
 /**
- * @author huapeng.huang
+ * @author cs12110
  * @version V1.0
  * @since 2021-04-20 09:31
  */
